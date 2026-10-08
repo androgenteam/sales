@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الاشتراكات الاحترافية | Androgen Med Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(-45deg, #000000, #081221, #0f2038, #1a4a7b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* -------------------------------------
+           تنسيقات شاشة البداية (Splash Screen)
+        ---------------------------------------- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(-45deg, #000000, #081221, #0f2038, #1a4a7b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .splash-logo-svg {
+            max-width: 450px;
+            width: 90%;
+            opacity: 0;
+            animation: fadeInLogo 1.5s ease-out forwards;
+            filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.4));
+        }
+
+        .splash-title {
+            margin-top: 20px;
+            font-size: 3rem;
+            color: #00e5ff;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInText 1.5s ease-out 0.8s forwards;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.8);
+            font-weight: 900;
+            letter-spacing: 4px;
+            font-family: 'Arial', sans-serif; /* الخط الإنجليزي العريض */
+        }
+
+        .splash-subtitle {
+            margin-top: 10px;
+            font-size: 1.8rem;
+            color: #ffffff;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInText 1.5s ease-out 1.5s forwards;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+            font-weight: 700;
+        }
+
+        @keyframes fadeInLogo {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* -------------------------------------
+           تنسيقات المحتوى الأساسي والموقع
+        ---------------------------------------- */
+        #main-content {
+            display: none;
+            opacity: 0;
+            padding: 20px;
+        }
+
+        .show-content {
+            display: block !important;
+            animation: showMain 1s ease-in forwards;
+        }
+
+        @keyframes showMain {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background: rgba(0, 229, 255, 0.2);
+            color: #00e5ff;
+            border: 1px solid rgba(0, 229, 255, 0.5);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        button:hover {
+            background: rgba(0, 229, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .row-number {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #00e5ff;
+        }
+
+        .delete-btn {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff4d4d;
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            box-shadow: none;
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 0.5);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-label {
+            font-size: 0.85rem;
+            color: #b3c5db;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00e5ff;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+        }
+
+        /* تنسيق حالة الانتهاء */
+        .card.expired {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+        }
+        
+        .card.expired input {
+            color: #ffcccc;
+        }
+
+        .card.expired .user-name {
+            color: #ff4d4d;
+            font-weight: bold;
+            border-bottom: 1px solid #ff4d4d;
+        }
+
+        .card.expired .row-number {
+            background: rgba(220, 53, 69, 0.8);
+            color: #fff;
+        }
+
+        .hidden-card {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            select, button {
+                width: 100%;
+            }
+            .splash-title {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+            .splash-subtitle {
+                font-size: 1.4rem;
+                padding: 0 15px;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- شاشة البداية مع الشعار الكيميائي الدقيق والنصوص أسفله -->
+<div id="splash-screen">
+    
+    <!-- رسم الحلقة الأندروجينية الدقيق هندسياً (Steroid Nucleus) -->
+    <svg viewBox="100 0 600 450" class="splash-logo-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+
+        <g filter="url(#neonGlow)">
+            <!-- الهيكل السداسي والخماسي الأساسي بانسجام تام -->
+            <g fill="none" stroke="#00e5ff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+                <!-- الحلقة A -->
+                <polygon points="230.7,230 161.4,270 161.4,350 230.7,390 300,350 300,270" />
+                <!-- الرابطة المضاعفة في الحلقة A -->
+                <line x1="240" y1="375" x2="292" y2="345" stroke-width="4" />
+                
+                <!-- الحلقة B -->
+                <polygon points="300,350 369.3,390 438.6,350 438.6,270 369.3,230 300,270" />
+                
+                <!-- الحلقة C -->
+                <polygon points="369.3,230 369.3,150 438.6,110 507.8,150 507.8,230 438.6,270" />
+                
+                <!-- الحلقة D (الخماسية) -->
+                <polygon points="507.8,230 580,250 640,190 580,130 507.8,150" />
+            </g>
+
+            <!-- الروابط الفراغية (Stereochemistry) -->
+            <!-- C10 Methyl (Wedge Up) -->
+            <polygon points="292,180 308,180 300,270" fill="#00e5ff" />
+            
+            <!-- C13 Methyl (Wedge Up) -->
+            <polygon points="499.8,60 515.8,60 507.8,150" fill="#00e5ff" />
+            
+            <!-- C8 H (Wedge Down) -->
+            <polygon points="415,315 430,325 438.6,270" fill="#00e5ff" />
+            <text x="408" y="350" fill="#00e5ff" font-family="Arial, sans-serif" font-size="26" font-weight="bold">H</text>
+            
+            <!-- C9 H (Dashed Down) -->
+            <line x1="369.3" y1="230" x2="369.3" y2="295" stroke="#00e5ff" stroke-width="4" stroke-dasharray="6,6" />
+            <text x="360" y="325" fill="#00e5ff" font-family="Arial, sans-serif" font-size="26" font-weight="bold">H</text>
+            
+            <!-- C14 H (Dashed Down) -->
+            <line x1="507.8" y1="230" x2="507.8" y2="295" stroke="#00e5ff" stroke-width="4" stroke-dasharray="6,6" />
+            <text x="498" y="325" fill="#00e5ff" font-family="Arial, sans-serif" font-size="26" font-weight="bold">H</text>
+        </g>
+    </svg>
+    
+    <!-- النصوص أسفل اللوغو بنفس الألوان -->
+    <h1 class="splash-title">ANDROGEN MED TEAM</h1>
+    <h2 class="splash-subtitle">نظامك المتكامل لادارة الاشتراكات و الاكواد</h2>
+</div>
+
+<!-- المحتوى الأساسي للموقع -->
+<div id="main-content" class="container">
+    <div class="header-controls glass-panel">
+        <div>
+            <h1 style="color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);">إدارة الاشتراكات والأكواد</h1>
+            <p style="font-size: 0.9rem; color: #ccc;">يتم حفظ البيانات تلقائياً وتحديث التواريخ لحظياً</p>
+        </div>
+        <div>
+            <select id="filter-select" onchange="filterCards()">
+                <option value="all">عرض جميع المواد</option>
+            </select>
+        </div>
+        <button onclick="addNewCard()">+ إضافة اشتراك جديد</button>
+    </div>
+
+    <div id="cards-container" class="cards-grid">
+        <!-- يتم إضافة البطاقات هنا ديناميكياً -->
+    </div>
+</div>
+
+<script>
+    let rowCount = 0;
+    const cardsContainer = document.getElementById('cards-container');
+    const filterSelect = document.getElementById('filter-select');
+
+    // التحكم بشاشة البداية عند تحميل الصفحة
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                mainContent.classList.add('show-content');
+                
+                loadData();
+                if (rowCount === 0) addNewCard();
+                setInterval(checkAllExpirations, 60000); 
+            }, 1000); 
+        }, 4500); // الشاشة تظل لـ 4.5 ثوانٍ للاستمتاع بالحركة المتسلسلة
+    });
+
+    function addNewCard(data = null) {
+        rowCount++;
+        const card = document.createElement('div');
+        card.className = 'card glass-panel sub-row';
+        card.dataset.id = rowCount;
+
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="row-number">#${rowCount}</span>
+                <button class="delete-btn" onclick="deleteCard(this)">حذف</button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" class="user-name" placeholder="اسم المشترك" oninput="saveData()" value="${data ? data.name : ''}">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <input type="text" class="subject-name" placeholder="المادة (مثل: فيزيولوجيا)" oninput="updateFilters(); saveData()" value="${data && data.subject ? data.subject : ''}">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="subject-code" placeholder="الكود" oninput="saveData()" value="${data && data.code ? data.code : ''}">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <span class="input-label">تاريخ البداية</span>
+                    <input type="date" class="start-date" onchange="handleStartDateChange(this); saveData()" value="${data ? data.startDate : ''}">
+                </div>
+                <div class="input-group">
+                    <span class="input-label">تاريخ الانتهاء</span>
+                    <input type="date" class="end-date" onchange="checkExpiration(this.closest('.card')); saveData()" value="${data ? data.endDate : ''}">
+                </div>
+            </div>
+        `;
+
+        cardsContainer.appendChild(card);
+        if (data) checkExpiration(card);
+        updateFilters();
+    }
+
+    function handleStartDateChange(startInput) {
+        const card = startInput.closest('.card');
+        const endInput = card.querySelector('.end-date');
+        
+        if (startInput.value) {
+            const startDate = new Date(startInput.value);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 30);
+            endInput.value = endDate.toISOString().split('T')[0];
+        }
+        
+        checkExpiration(card);
+    }
+
+    function checkExpiration(card) {
+        const endDateInput = card.querySelector('.end-date');
+        
+        if (!endDateInput.value) {
+            card.classList.remove('expired');
+            return;
+        }
+
+        const endDate = new Date(endDateInput.value);
+        endDate.setHours(0, 0, 0, 0); 
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (endDate < today) {
+            card.classList.add('expired');
+        } else {
+            card.classList.remove('expired');
+        }
+    }
+
+    function checkAllExpirations() {
+        document.querySelectorAll('.card.sub-row').forEach(card => checkExpiration(card));
+    }
+
+    function deleteCard(btn) {
+        const card = btn.closest('.card');
+        card.remove();
+        reindexCards();
+        updateFilters();
+        saveData();
+    }
+
+    function reindexCards() {
+        rowCount = 0;
+        document.querySelectorAll('.card.sub-row').forEach(card => {
+            rowCount++;
+            card.dataset.id = rowCount;
+            card.querySelector('.row-number').innerText = '#' + rowCount;
+        });
+    }
+
+    function updateFilters() {
+        const subjects = new Set();
+        document.querySelectorAll('.subject-name').forEach(input => {
+            const val = input.value.trim();
+            if (val) subjects.add(val);
+        });
+
+        const currentValue = filterSelect.value;
+        filterSelect.innerHTML = '<option value="all">عرض جميع المواد</option>';
+        
+        subjects.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub;
+            option.textContent = sub;
+            filterSelect.appendChild(option);
+        });
+
+        if (subjects.has(currentValue)) {
+            filterSelect.value = currentValue;
+        } else {
+            filterSelect.value = 'all';
+            filterCards();
+        }
+    }
+
+    function filterCards() {
+        const selected = filterSelect.value;
+        document.querySelectorAll('.card.sub-row').forEach(card => {
+            const subject = card.querySelector('.subject-name').value.trim();
+            if (selected === 'all' || subject === selected) {
+                card.classList.remove('hidden-card');
+            } else {
+                card.classList.add('hidden-card');
+            }
+        });
+    }
+
+    function saveData() {
+        const data = [];
+        document.querySelectorAll('.card.sub-row').forEach(card => {
+            data.push({
+                name: card.querySelector('.user-name').value,
+                subject: card.querySelector('.subject-name').value,
+                code: card.querySelector('.subject-code').value,
+                startDate: card.querySelector('.start-date').value,
+                endDate: card.querySelector('.end-date').value
+            });
+        });
+        localStorage.setItem('subscriptionsDataV2', JSON.stringify(data));
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('subscriptionsDataV2') || localStorage.getItem('subscriptionsData');
+        if (saved) {
+            const data = JSON.parse(saved);
+            data.forEach(item => addNewCard(item));
+        }
+    }
+</script>
+
+</body>
+</html>
